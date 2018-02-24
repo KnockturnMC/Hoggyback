@@ -32,7 +32,7 @@ public class HoggyBackListener implements Listener {
 
         if(!(entity instanceof LivingEntity)) return;
 
-        if(!(entity instanceof Player) && player.hasPermission(Permission.HOGGY_BACK_ANIMAL_PICKUP)) return;
+        if(!(entity instanceof Player) && !player.hasPermission(Permission.HOGGY_BACK_ANIMAL_PICKUP)) return;
 
         LivingEntity animal = (LivingEntity) entity;
 
