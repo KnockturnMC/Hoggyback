@@ -1,0 +1,6 @@
+name: Hoggyback
+version:  1.0
+description: Piggyback
+main: com.knockturnmc.hoggyback.HoggyBackCore
+commands:
+  hoggyback:
