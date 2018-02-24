@@ -242,8 +242,6 @@ public class HoggyBackListenerTest {
 
         List<Entity> entities = new ArrayList<Entity>();
 
-
-
         when(player.getPassengers()).thenReturn(entities);
 
         PlayerInteractEvent event = new PlayerInteractEvent(player, Action.LEFT_CLICK_AIR, null, null, null);
