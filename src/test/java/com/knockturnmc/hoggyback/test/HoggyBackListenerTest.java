@@ -47,6 +47,7 @@ public class HoggyBackListenerTest {
         Entity entity = Mockito.mock(Player.class);
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(false);
+        when(player.isSneaking()).thenReturn(true);
 
         PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, entity);
 
@@ -80,6 +81,7 @@ public class HoggyBackListenerTest {
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
+        when(player.isSneaking()).thenReturn(true);
 
         PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, entity);
 
@@ -98,6 +100,7 @@ public class HoggyBackListenerTest {
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
+        when(player.isSneaking()).thenReturn(true);
 
 
         UUID uuid = UUID.randomUUID();
@@ -124,6 +127,7 @@ public class HoggyBackListenerTest {
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
+        when(player.isSneaking()).thenReturn(true);
 
 
         UUID uuid = UUID.randomUUID();
@@ -153,6 +157,7 @@ public class HoggyBackListenerTest {
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
+        when(player.isSneaking()).thenReturn(true);
 
 
         UUID uuid = UUID.randomUUID();
@@ -180,6 +185,7 @@ public class HoggyBackListenerTest {
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
+        when(player.isSneaking()).thenReturn(true);
 
 
         UUID uuid = UUID.randomUUID();
@@ -215,6 +221,7 @@ public class HoggyBackListenerTest {
         when(player.getEyeLocation()).thenReturn(location);
         when(player.getVelocity()).thenReturn(vector);
         when(location.getDirection()).thenReturn(vector);
+        when(player.isSneaking()).thenReturn(true);
 
         PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, entityA);
 

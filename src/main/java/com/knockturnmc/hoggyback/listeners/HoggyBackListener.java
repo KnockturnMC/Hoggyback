@@ -24,6 +24,8 @@ public class HoggyBackListener implements Listener {
     public void onShiftLeftClick(PlayerInteractEntityEvent event){
         Player player = event.getPlayer();
 
+        if(!player.isSneaking()) return;
+
         if(!player.hasPermission(Permission.HOGGY_BACK_PERMS)) return;
 
         Entity entity = event.getRightClicked();
