@@ -16,10 +16,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * A listener for if the user is being hoggy backed or not.
+ */
 public class HoggyBackListener implements Listener {
 
-    private static final Map<UUID, Long> cooldown = new HashMap<UUID, Long>();
+    private static final Map<UUID, Long> COOLDOWN = new HashMap<UUID, Long>();
 
+    /**
+     * Checks if a player is shift right clicking and if so, added a passenger to their head.
+     * @param event Interact event.
+     */
     @EventHandler
     public void onShiftLeftClick(PlayerInteractEntityEvent event){
         Player player = event.getPlayer();
@@ -45,6 +52,11 @@ public class HoggyBackListener implements Listener {
         }
     }
 
+    /**
+     * Checks if an entity is a passenger, if so throws them off.
+     *
+     * @param event interact event.
+     */
     @EventHandler
     public void onThrowClick(PlayerInteractEvent event){
         if(event.getAction() != Action.LEFT_CLICK_AIR) return;
@@ -65,10 +77,10 @@ public class HoggyBackListener implements Listener {
 
             Map<UUID, Boolean> enabled = HoggyBackCore.getUserEnabled();
             if (!enabled.containsKey(uuid) || !enabled.get(uuid)) {
-                if(!cooldown.containsKey(player.getUniqueId()) ||
-                        (cooldown.get(player.getUniqueId()) + 1000 * 5L < System.currentTimeMillis())) {
+                if(!COOLDOWN.containsKey(player.getUniqueId()) ||
+                        (COOLDOWN.get(player.getUniqueId()) + 1000 * 5L < System.currentTimeMillis())) {
                     player.sendMessage(Lang.ENABLED_ERROR);
-                    cooldown.put(player.getUniqueId(), System.currentTimeMillis());
+                    COOLDOWN.put(player.getUniqueId(), System.currentTimeMillis());
                 }
                 return;
             }
@@ -78,6 +90,6 @@ public class HoggyBackListener implements Listener {
     }
 
     public static Map<UUID, Long> getCooldown() {
-        return cooldown;
+        return COOLDOWN;
     }
 }
