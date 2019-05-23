@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class HoggyBackCore extends JavaPlugin {
 
-    private static final Map<UUID, Boolean> USER_ENABLED = new HashMap<UUID, Boolean>();
+    private static final Map<UUID, Boolean> USER_ENABLED = new HashMap<>();
     private static HoggyBackCore instance;
 
     @Override

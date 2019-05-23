@@ -21,4 +21,8 @@ public class BukkitWrapper {
         HoggyBackCore.getInstance().getCommand(command).setExecutor(cmd);
     }
 
+    public static void scheduleTaskLater(Runnable runnable, long time){
+        Bukkit.getScheduler().runTaskLater(HoggyBackCore.getInstance(), runnable, time);
+    }
+
 }

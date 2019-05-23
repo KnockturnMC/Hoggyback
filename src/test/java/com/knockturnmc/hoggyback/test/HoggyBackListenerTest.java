@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,12 +34,13 @@ import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({BukkitWrapper.class})
+@PrepareForTest({BukkitWrapper.class, HoggyBackCore.class})
 public class HoggyBackListenerTest {
 
     @Before
     public void setup(){
         PowerMockito.mockStatic(BukkitWrapper.class);
+        PowerMockito.mockStatic(HoggyBackCore.class);
     }
 
     @Test
@@ -80,6 +83,7 @@ public class HoggyBackListenerTest {
         List<Entity> passengers = new ArrayList<Entity>();
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
+        when(player.hasPermission(Permission.HOGGY_BACK_ANIMAL_PICKUP)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
         when(player.isSneaking()).thenReturn(true);
 
@@ -99,6 +103,7 @@ public class HoggyBackListenerTest {
         List<Entity> passengers = new ArrayList<Entity>();
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
+        when(player.hasPermission(Permission.HOGGY_BACK_ANIMAL_PICKUP)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
         when(player.isSneaking()).thenReturn(true);
 
@@ -177,11 +182,10 @@ public class HoggyBackListenerTest {
 
     @Test
     public void onPlayerPickUpPass(){
-        HoggyBackListener listener = new HoggyBackListener();
         Player player = Mockito.mock(Player.class);
         Entity entity = Mockito.mock(Player.class);
 
-        List<Entity> passengers = new ArrayList<Entity>();
+        List<Entity> passengers = new ArrayList<>();
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
@@ -192,9 +196,12 @@ public class HoggyBackListenerTest {
         UUID uuid1 = UUID.randomUUID();
         when(player.getUniqueId()).thenReturn(uuid);
         when(entity.getUniqueId()).thenReturn(uuid1);
+        when(HoggyBackCore.getUserEnabled()).thenCallRealMethod();
 
         HoggyBackCore.getUserEnabled().put(uuid1, true);
+        HoggyBackCore.getUserEnabled().put(uuid, true);
 
+        HoggyBackListener listener = new HoggyBackListener();
         PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, entity);
 
         listener.onShiftLeftClick(event);
@@ -213,6 +220,7 @@ public class HoggyBackListenerTest {
         passengers.add(entityB);
 
         when(player.hasPermission(Permission.HOGGY_BACK_PERMS)).thenReturn(true);
+        when(player.hasPermission(Permission.HOGGY_BACK_ANIMAL_PICKUP)).thenReturn(true);
         when(player.getPassengers()).thenReturn(passengers);
 
         Location location = Mockito.mock(Location.class);
@@ -279,5 +287,26 @@ public class HoggyBackListenerTest {
 
         verify(player, times(1)).eject();
         verify(entity, times(1)).setVelocity(any(Vector.class));
+    }
+
+    @Test
+    public void onTeleport(){
+        HoggyBackListener listener = new HoggyBackListener();
+        Player player = Mockito.mock(Player.class);
+        Location from = mock(Location.class);
+        Location to = mock(Location.class);
+
+        List<Entity> passengers = Collections.singletonList(mock(Player.class));
+
+        Entity vehicle = mock(Player.class);
+        when(player.getPassengers()).thenReturn(passengers);
+        when(player.getVehicle()).thenReturn(vehicle);
+
+        PlayerTeleportEvent event = new PlayerTeleportEvent(player, from, to);
+        listener.onTeleportDismount(event);
+
+        verify(vehicle, times(1)).eject();
+        verify(vehicle, times(1)).teleport(to);
+        verify(player, times(1)).eject();
     }
 }
