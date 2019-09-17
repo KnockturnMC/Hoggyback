@@ -3,6 +3,7 @@ package com.knockturnmc.hoggyback.listeners;
 import com.knockturnmc.hoggyback.HoggyBackCore;
 import com.knockturnmc.hoggyback.util.Lang;
 import com.knockturnmc.hoggyback.util.Permission;
+import com.knockturnmc.hoggyback.wrappers.BukkitWrapper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -11,8 +12,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -39,11 +42,13 @@ public class HoggyBackListener implements Listener {
 
         if(!(entity instanceof LivingEntity)) return;
 
-        if(!(entity instanceof Player) && !player.hasPermission(Permission.HOGGY_BACK_ANIMAL_PICKUP)) return;
+        if((!(entity instanceof Player)) && !player.hasPermission(Permission.HOGGY_BACK_ANIMAL_PICKUP)) return;
 
         LivingEntity animal = (LivingEntity) entity;
 
-        if(player.getPassengers().isEmpty()) addPassengerCheck(player, animal);
+        if(player.getPassengers().isEmpty()) {
+            addPassengerCheck(player, animal);
+        }
         else {
             Entity pass = player.getPassengers().get(0);
             player.eject();
@@ -87,6 +92,24 @@ public class HoggyBackListener implements Listener {
         }
 
         player.addPassenger(entity);
+    }
+
+    @EventHandler
+    public void onTeleportDismount(PlayerTeleportEvent event){
+        Player player = event.getPlayer();
+        final List<Entity> passengers = player.getPassengers();
+        Entity vehicle = player.getVehicle();
+
+        if(vehicle != null) {
+            vehicle.eject();
+            vehicle.teleport(event.getTo());
+        }
+
+        if(passengers.size() > 0) {
+            player.eject();
+
+            BukkitWrapper.scheduleTaskLater(() -> passengers.forEach(player::addPassenger), 10L);
+        }
     }
 
     public static Map<UUID, Long> getCooldown() {
